@@ -44,11 +44,6 @@ class SIF:
 
         return surf_res
 
-    def get_probabilities(self):
-        dets = [np.linalg.det(t[0]) for t in self.T]
-        s = sum(dets)
-        return [d/s for d in dets]
-
     def get_random_T(self, pr):
         p = random.random()  # случайное вещественное число в интервале [0; 1]
         off = 0
@@ -59,8 +54,14 @@ class SIF:
 
         return False
 
+    def get_probabilities(self):
+        dets = [np.abs(np.linalg.det(t[0])) + 0.1 for t in self.T]
+        s = sum(dets)
+        return [d/s for d in dets]
+
     def get_next_point(self, pos, pt, scale):
-        t = self.get_random_T(self.P)
+        p = self.get_probabilities()
+        t = self.get_random_T(p)
 
         if not t:
             return pt
